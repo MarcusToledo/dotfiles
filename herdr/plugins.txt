@@ -2,6 +2,4 @@
 annotate                plannotator/herdr-annotate/lite  99002e24525a9ae327450cd83a17b1e86b2ee81f  enabled
 herdr-automatic-rename  qu8n/herdr-automatic-rename      081489b4d961d0d9c0c8b6a02d472e5cfe125ad5  enabled
 herdr-file-viewer       smarzban/herdr-file-viewer       c237626260478d5f2d788149fc741ddf3c3588ba  enabled
-# Superseded by herdr-automatic-rename; kept installed but off.
-herdr.auto-title        kryptamine/herdr-auto-title      666f7bc4bd2a9dfb0704c361369f421148bd05a3  disabled
 persiyanov.reviewr      persiyanov/herdr-reviewr         dca1fb88a56c0d6246a2e9004ecbe27fd11a4436  enabled
