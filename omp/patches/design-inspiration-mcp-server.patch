@@ -1,0 +1,71 @@
+diff --git a/src/index.ts b/src/index.ts
+index 98de37c29c3bc793b9ecff3f4af37b7834326893..65ccf38d416eeb4ed18d6e54b189b4c1cc413301 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -14,8 +14,15 @@ const DESIGN_SITES = {
+   awwwards: "awwwards.com",
+   mobbin: "mobbin.com",
+   pinterest: "pinterest.com",
++  // Local additions (keyword-scoped, see buildSiteQuery).
++  siteinspire: "siteinspire.com",
++  cssdesignawards: "cssdesignawards.com",
++  godly: "godly.website",
++  landbook: "land-book.com",
+ } as const;
+ 
++const SITE_KEYS = Object.keys(DESIGN_SITES) as [DesignSite, ...DesignSite[]];
++
+ type DesignSite = keyof typeof DESIGN_SITES;
+ 
+ async function serperRequest<T>(
+@@ -117,14 +124,10 @@ function formatSearchResults(results: SerperOrganicResult[], query: string): str
+   return result;
+ }
+ 
++// Local patch: Serper free tier rejects `site:` operators, so scope by platform name keywords.
+ function buildSiteQuery(query: string, sites: DesignSite[]): string {
+-  if (!sites.length) {
+-    const allSites = Object.values(DESIGN_SITES);
+-    const siteFilter = allSites.map((s) => `site:${s}`).join(" OR ");
+-    return `${query} (${siteFilter})`;
+-  }
+-  const siteFilter = sites.map((s) => `site:${DESIGN_SITES[s]}`).join(" OR ");
+-  return `${query} (${siteFilter})`;
++  const domains = sites.length ? sites.map((s) => DESIGN_SITES[s]) : Object.values(DESIGN_SITES);
++  return `${query} (${domains.map((d) => d.split(".")[0]).join(" OR ")})`;
+ }
+ 
+ const server = new McpServer({
+@@ -142,10 +145,10 @@ const SearchImagesInputSchema = z
+         'UI design search query. Examples: "dashboard dark mode", "mobile onboarding flow", "saas pricing page"'
+       ),
+     sites: z
+-      .array(z.enum(["dribbble", "behance", "awwwards", "mobbin", "pinterest"]))
++      .array(z.enum(SITE_KEYS))
+       .default([])
+       .describe(
+-        "Filter to specific design sites. Empty array searches all sites. Options: dribbble, behance, awwwards, mobbin, pinterest"
++        `Filter to specific design sites. Empty array searches all sites. Options: ${SITE_KEYS.join(", ")}`
+       ),
+     num: z
+       .number()
+@@ -218,7 +221,7 @@ const SearchReferencesInputSchema = z
+         'UI design search query. Examples: "best dashboard designs 2025", "mobile navigation patterns"'
+       ),
+     sites: z
+-      .array(z.enum(["dribbble", "behance", "awwwards", "mobbin", "pinterest"]))
++      .array(z.enum(SITE_KEYS))
+       .default([])
+       .describe("Filter to specific design sites. Empty array searches all sites."),
+     num: z
+@@ -325,9 +328,7 @@ server.registerTool("design_search_styles", {
+     };
+ 
+     const query = `${params.style} ${typeKeywords[params.type]} UI design inspiration`;
+-    const allSites = Object.values(DESIGN_SITES);
+-    const siteFilter = allSites.map((s) => `site:${s}`).join(" OR ");
+-    const fullQuery = `${query} (${siteFilter})`;
++    const fullQuery = buildSiteQuery(query, []);
+ 
+     const [imageData, searchData] = await Promise.all([
+       serperRequest<SerperImagesResponse>("/images", { q: fullQuery, num: params.num }),

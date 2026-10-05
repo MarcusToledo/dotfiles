@@ -1,3 +1,4 @@
+# keymap-modifier: alt
 # Ubuntu desktop (work notebook). Shell comes from $SHELL; pin it here if needed:
 # [terminal]
 # default_shell = "/usr/bin/fish"

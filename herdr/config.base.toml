@@ -34,13 +34,17 @@ enabled = true
 name = "solarized"
 auto_switch = false
 
-# cmd = super on Linux; works only when the terminal forwards it.
+#% {{mod}} is the direct-chord modifier. herdr/install.sh replaces it with the
+#% value on the profile's first line: "# keymap-modifier: cmd" (mac, vps) or
+#% "# keymap-modifier: alt" (ubuntu). Lines starting with "#%" describe this
+#% template and are left out of the rendered config.toml.
+# Direct chords use the profile's modifier; cmd only works when the terminal forwards it.
 [keys]
 prefix = "ctrl+b"
-new_tab = ["prefix+c", "cmd+t"]
-close_tab = ["prefix+shift+x", "cmd+w"]
-close_pane = ["prefix+x", "cmd+x"]
-goto = ["prefix+g", "cmd+k"]
+new_tab = ["prefix+c", "{{mod}}+t"]
+close_tab = ["prefix+shift+x", "{{mod}}+w"]
+close_pane = ["prefix+x", "{{mod}}+x"]
+goto = ["prefix+g", "{{mod}}+k"]
 
 previous_tab = ["prefix+p", "ctrl+left"]
 next_tab = ["prefix+n", "ctrl+right"]
@@ -50,17 +54,17 @@ next_workspace = "ctrl+down"
 cycle_pane_next = ["prefix+tab", "alt+up"]
 cycle_pane_previous = ["prefix+shift+tab", "alt+down"]
 
-switch_tab = ["prefix+1..9", "cmd+1..9"]
+switch_tab = ["prefix+1..9", "{{mod}}+1..9"]
 
 # Agent queue (follows agent_panel_sort = "priority": blocked/done first)
-next_agent = ["prefix+j", "cmd+j"]
-previous_agent = ["prefix+shift+j", "cmd+shift+j"]
+next_agent = ["prefix+j", "{{mod}}+j"]
+previous_agent = ["prefix+shift+j", "{{mod}}+shift+j"]
 
-zoom = ["prefix+z", "cmd+shift+enter"]
+zoom = ["prefix+z", "{{mod}}+shift+enter"]
 
 # Lazygit over the focused pane. q closes it.
 [[keys.command]]
-key = ["cmd+shift+g", "prefix+d"]
+key = ["{{mod}}+shift+g", "prefix+d"]
 type = "popup"
 command = "cd \"${HERDR_ACTIVE_PANE_CWD:-.}\" && exec lazygit"
 description = "Git status"
@@ -68,7 +72,7 @@ width = "90%"
 height = "85%"
 
 [[keys.command]]
-key = "cmd+r"
+key = "{{mod}}+r"
 type = "plugin_action"
 command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the id, not the name
 
@@ -80,7 +84,7 @@ command = "annotate.capture"
 description = "annotate text"
 
 [[keys.command]]
-key = "cmd+shift+a"
+key = "{{mod}}+shift+a"
 type = "plugin_action"
 command = "annotate.capture"
 description = "annotate text (direct chord, avoids herdr#3380 prefix-clears-selection bug)"

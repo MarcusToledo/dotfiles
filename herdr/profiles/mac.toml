@@ -1,6 +1,7 @@
+# keymap-modifier: cmd
 [terminal]
-# Homebrew fish; $SHELL (/usr/local/bin/fish) is a stale 3.7.0 binary
-default_shell = "/opt/homebrew/bin/fish"
+# Homebrew fish; the installer resolves the prefix for this Mac's architecture.
+default_shell = "{{fish_shell}}"
 
 [ui.toast]
 delivery = "system"
