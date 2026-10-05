@@ -69,7 +69,8 @@ while read -r -u 3 id source ref state; do
     echo "plugin $id: install $source@$ref"
     if ! $dry_run; then
       [[ -n "$line" ]] && "$herdr_bin" plugin uninstall "$id"
-      "$herdr_bin" plugin install --yes --ref "$ref" "$source"
+      # Positional first: herdr 0.9.1's parser rejects options before it.
+      "$herdr_bin" plugin install "$source" --ref "$ref" --yes
       line="$(plugin_line "$id")"
     fi
   fi
