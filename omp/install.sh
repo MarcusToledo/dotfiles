@@ -19,6 +19,8 @@ here="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 OMP_VERSION=18.3.1
 SKILL_EVOLUTION_VERSION=0.2.0
+# omp 18.3.x needs a bun that parses `using` and bun.lock lockfileVersion 2.
+BUN_VERSION=1.4.2
 
 MY_OMP_REPO=git@github.com:MarcusToledo/my-omp.git
 MY_OMP_BRANCH=master
@@ -444,7 +446,10 @@ for tool in curl git ssh tar; do
   have "$tool" || missing_tools="$missing_tools $tool"
 done
 have sha256sum || have shasum || missing_tools="$missing_tools sha256sum"
-have bun || have unzip || missing_tools="$missing_tools unzip" # bun's installer unpacks a zip
+# bun's installer unpacks a zip; needed when bun is absent or older than BUN_VERSION.
+if ! have unzip && ! version_ge "$(bun --version 2>/dev/null || echo 0)" "$BUN_VERSION"; then
+  missing_tools="$missing_tools unzip"
+fi
 if [[ -n "$missing_tools" ]]; then
   if [[ "$(detect_os)" == macos ]]; then
     have brew || die "missing:$missing_tools; install Homebrew (https://brew.sh) and retry"
@@ -482,11 +487,19 @@ fi
 
 # --- bun -----------------------------------------------------------------------
 step "bun"
-if have bun; then
-  log "bun $(bun --version): ok"
+bun_cur="$(bun --version 2>/dev/null || true)"
+if [[ -n "$bun_cur" ]] && version_ge "$bun_cur" "$BUN_VERSION"; then
+  log "bun $bun_cur: ok"
 else
-  run bash -o pipefail -c 'curl -fsSL https://bun.sh/install | bash'
-  $DRY_RUN || have bun || die "bun installed but not on PATH (expected ~/.bun/bin/bun)"
+  log "bun ${bun_cur:-absent} -> $BUN_VERSION (~/.bun/bin)"
+  run bash -o pipefail -c "curl -fsSL https://bun.sh/install | bash -s bun-v$BUN_VERSION"
+  hash -r
+  if ! $DRY_RUN; then
+    bun_cur="$(bun --version 2>/dev/null || true)"
+    if [[ -z "$bun_cur" ]] || ! version_ge "$bun_cur" "$BUN_VERSION"; then
+      die "bun is ${bun_cur:-missing} at $(command -v bun || echo '?'); need >= $BUN_VERSION at ~/.bun/bin/bun (put ~/.bun/bin first in PATH)"
+    fi
+  fi
 fi
 
 # --- node ----------------------------------------------------------------------
@@ -525,7 +538,8 @@ if [[ -n "$pending" ]]; then
   run bun add -g $pending
 fi
 if have omp; then
-  log "omp --version: $(omp --version)"
+  omp_cur="$(omp --version 2>/dev/null)" || $DRY_RUN || die "omp --version failed; check bun (bun --version) and reinstall with this script"
+  log "omp --version: ${omp_cur:-unknown}"
 fi
 
 # --- my-omp config -------------------------------------------------------------
