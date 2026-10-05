@@ -1,0 +1,6 @@
+[terminal]
+# Homebrew fish; $SHELL (/usr/local/bin/fish) is a stale 3.7.0 binary
+default_shell = "/opt/homebrew/bin/fish"
+
+[ui.toast]
+delivery = "system"

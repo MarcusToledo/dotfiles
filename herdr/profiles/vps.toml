@@ -1,0 +1,3 @@
+# Headless server reached over SSH: no desktop notifier, toasts stay in herdr.
+[ui.toast]
+delivery = "herdr"

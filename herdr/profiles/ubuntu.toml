@@ -1,0 +1,7 @@
+# Ubuntu desktop (work notebook). Shell comes from $SHELL; pin it here if needed:
+# [terminal]
+# default_shell = "/usr/bin/fish"
+
+# Desktop notifications via the system notifier (notify-send / libnotify).
+[ui.toast]
+delivery = "system"

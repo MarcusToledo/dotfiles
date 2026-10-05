@@ -1,0 +1,2 @@
+# LazyVim (config at ~/.config/nvim) via Neovim, opened at the reviewed line.
+editor = "nvim +{line} {file}"

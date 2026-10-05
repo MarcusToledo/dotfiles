@@ -1,0 +1,117 @@
+onboarding = false
+
+[theme.custom]
+#red = "#4e82ef"     # blocked, needs input
+#teal = "#4e82ef"    # done, not seen yet
+#yellow = "#a78bfa"  # working
+#active_row_bg = "#45475a"
+
+[ui]
+agent_panel_sort = "priority"
+prompt_new_tab_name = false
+status_indicators = "dots"
+copy_on_select = true
+show_agent_labels_on_pane_borders = true
+
+[ui.sidebar.agents]
+row_gap = 1
+rows = [
+  ["state_icon", "workspace"],
+  ["tab"],
+]
+
+[ui.sidebar.spaces]
+row_gap = 1
+rows = [
+  ["state_icon", "workspace"],
+  ["branch"],
+]
+
+[ui.sound]
+enabled = true
+
+[theme]
+name = "solarized"
+auto_switch = false
+
+# cmd = super on Linux; works only when the terminal forwards it.
+[keys]
+prefix = "ctrl+b"
+new_tab = ["prefix+c", "cmd+t"]
+close_tab = ["prefix+shift+x", "cmd+w"]
+close_pane = ["prefix+x", "cmd+x"]
+goto = ["prefix+g", "cmd+k"]
+
+previous_tab = ["prefix+p", "ctrl+left"]
+next_tab = ["prefix+n", "ctrl+right"]
+previous_workspace = "ctrl+up"
+next_workspace = "ctrl+down"
+
+cycle_pane_next = ["prefix+tab", "alt+up"]
+cycle_pane_previous = ["prefix+shift+tab", "alt+down"]
+
+switch_tab = ["prefix+1..9", "cmd+1..9"]
+
+# Agent queue (follows agent_panel_sort = "priority": blocked/done first)
+next_agent = ["prefix+j", "cmd+j"]
+previous_agent = ["prefix+shift+j", "cmd+shift+j"]
+
+zoom = ["prefix+z", "cmd+shift+enter"]
+
+# Lazygit over the focused pane. q closes it.
+[[keys.command]]
+key = ["cmd+shift+g", "prefix+d"]
+type = "popup"
+command = "cd \"${HERDR_ACTIVE_PANE_CWD:-.}\" && exec lazygit"
+description = "Git status"
+width = "90%"
+height = "85%"
+
+[[keys.command]]
+key = "cmd+r"
+type = "plugin_action"
+command = "persiyanov.reviewr.toggle"   # <plugin_id>.<action_id> — note the id, not the name
+
+# Terminal annotations
+[[keys.command]]
+key = "prefix+a"
+type = "plugin_action"
+command = "annotate.capture"
+description = "annotate text"
+
+[[keys.command]]
+key = "cmd+shift+a"
+type = "plugin_action"
+command = "annotate.capture"
+description = "annotate text (direct chord, avoids herdr#3380 prefix-clears-selection bug)"
+
+[[keys.command]]
+key = "prefix+shift+a"
+type = "plugin_action"
+command = "annotate.copy-context"
+description = "copy annotations as context"
+
+[[keys.command]]
+key = "prefix+ctrl+a"
+type = "plugin_action"
+command = "annotate.copy-archive"
+description = "copy annotations as context and archive them"
+
+[[keys.command]]
+key = "prefix+m"
+type = "plugin_action"
+command = "annotate.manage"
+description = "manage annotations"
+
+# File viewer
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer"
+description = "open file viewer in split"
+
+[[keys.command]]
+key = "prefix+shift+f"
+type = "plugin_action"
+command = "herdr-file-viewer.open-file-viewer-tab"
+description = "open file viewer in tab"
